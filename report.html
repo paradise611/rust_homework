@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rust_homework report</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --paper: rgba(255, 252, 246, 0.92);
+      --panel: #fffdf8;
+      --line: #ded6c8;
+      --text: #2c2722;
+      --muted: #74695e;
+      --accent: #8c5a3c;
+      --accent-soft: #efe3d3;
+      --ok: #5b7f5f;
+      --warn: #b7791f;
+      --err: #b34a36;
+      --shadow: 0 18px 48px rgba(89, 67, 44, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Serif SC", "Source Han Serif SC", "PingFang SC", "Microsoft YaHei", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(140, 90, 60, 0.10), transparent 32%),
+        linear-gradient(180deg, #f7f3eb 0%, #f1ebe1 100%);
+      line-height: 1.7;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 20px 64px;
+    }
+    .hero {
+      background: var(--paper);
+      border: 1px solid rgba(140, 90, 60, 0.14);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.2;
+      font-weight: 700;
+    }
+    .subtitle {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .meta {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .files {
+      display: grid;
+      gap: 18px;
+    }
+    .file-card {
+      background: var(--paper);
+      border: 1px solid rgba(140, 90, 60, 0.12);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .file-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .file-title {
+      margin: 0;
+      font-size: 20px;
+      word-break: break-all;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .metric-box {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .metric-box strong {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .metric-box span {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    h2.section-title {
+      margin: 0 0 14px;
+      font-size: 16px;
+    }
+    .functions, .issues {
+      margin-top: 16px;
+    }
+    ul.clean {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+    .list-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .issue-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .issue-rule {
+      font-family: "JetBrains Mono", "Consolas", monospace;
+      font-size: 13px;
+      color: var(--accent);
+    }
+    .severity {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .severity-warning { background: #fbefda; color: var(--warn); }
+    .severity-error { background: #f8e1dc; color: var(--err); }
+    .issue-message {
+      margin: 0;
+      font-size: 14px;
+    }
+    .issue-snippet {
+      margin-top: 10px;
+      padding: 12px 14px;
+      background: #f8f5ef;
+      border-radius: 12px;
+      border: 1px dashed var(--line);
+      font-family: "JetBrains Mono", "Consolas", monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .empty {
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    @media (max-width: 640px) {
+      .page { padding: 24px 14px 40px; }
+      .hero, .file-card { padding: 20px; border-radius: 18px; }
+      .stat-value { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="eyebrow">rust_homework Static Analysis Report</div>
+      <h1>Rust 作业静态分析报告</h1>
+      <p class="subtitle">本报告仅展示警告与严重问题，已隐藏提示级别信息，方便优先处理真正需要修复的项。</p>
+      <div class="summary-grid">
+        <div class="stat"><div class="stat-label">文件数量</div><div class="stat-value">2</div></div>
+        <div class="stat"><div class="stat-label">问题总数</div><div class="stat-value">8</div></div>
+        <div class="stat"><div class="stat-label">总行数</div><div class="stat-value">350</div></div>
+        <div class="stat"><div class="stat-label">代码行数</div><div class="stat-value">308</div></div>
+        <div class="stat"><div class="stat-label">注释行数</div><div class="stat-value">16</div></div>
+        <div class="stat"><div class="stat-label">空白行数</div><div class="stat-value">26</div></div>
+      </div>
+      <div class="meta">
+        <div><strong>项目路径：</strong>./upload</div>
+        <div><strong>生成时间：</strong>1780751901</div>
+      </div>
+    </section>
+    <section class="files">
+      <article class="file-card">
+        <div class="file-header">
+          <h2 class="file-title">./upload\lab.py</h2>
+          <div class="badge">3 个问题</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-box"><strong>总行数</strong><span>277</span></div>
+          <div class="metric-box"><strong>代码行</strong><span>259</span></div>
+          <div class="metric-box"><strong>注释行</strong><span>5</span></div>
+          <div class="metric-box"><strong>空白行</strong><span>13</span></div>
+          <div class="metric-box"><strong>函数数</strong><span>10</span></div>
+          <div class="metric-box"><strong>最大嵌套</strong><span>7</span></div>
+        </div>
+        <div class="functions">
+          <h2 class="section-title">函数信息</h2>
+          <ul class="clean">
+            <li class="list-card"><strong>func</strong><br>第 7-14 行，参数 0 个，长度 8 行</li>
+            <li class="list-card"><strong>func11</strong><br>第 37-62 行，参数 1 个，长度 26 行</li>
+            <li class="list-card"><strong>wrapper</strong><br>第 38-61 行，参数 0 个，长度 24 行</li>
+            <li class="list-card"><strong>func22</strong><br>第 63-71 行，参数 1 个，长度 9 行</li>
+            <li class="list-card"><strong>wrapper2</strong><br>第 64-70 行，参数 0 个，长度 7 行</li>
+            <li class="list-card"><strong>add</strong><br>第 74-95 行，参数 0 个，长度 22 行</li>
+            <li class="list-card"><strong>delete</strong><br>第 98-126 行，参数 0 个，长度 29 行</li>
+            <li class="list-card"><strong>change</strong><br>第 129-202 行，参数 0 个，长度 74 行</li>
+            <li class="list-card"><strong>find</strong><br>第 205-231 行，参数 0 个，长度 27 行</li>
+            <li class="list-card"><strong>show</strong><br>第 234-247 行，参数 0 个，长度 14 行</li>
+          </ul>
+        </div>
+        <div class="issues">
+          <h2 class="section-title">问题详情</h2>
+          <ul class="clean">
+            <li class="list-card">
+              <div class="issue-top">
+                <span class="issue-rule">python.bare_except</span>
+                <span class="severity severity-warning">警告</span>
+              </div>
+              <p class="issue-message">第 4 行: bare except clause found</p>
+              <div class="issue-snippet">except:</div>
+            </li>
+            <li class="list-card">
+              <div class="issue-top">
+                <span class="issue-rule">python.bare_except</span>
+                <span class="severity severity-warning">警告</span>
+              </div>
+              <p class="issue-message">第 33 行: bare except clause found</p>
+              <div class="issue-snippet">except:</div>
+            </li>
+            <li class="list-card">
+              <div class="issue-top">
+                <span class="issue-rule">style.deep_nesting</span>
+                <span class="severity severity-warning">警告</span>
+              </div>
+              <p class="issue-message">第 1 行: nesting depth is larger than configured threshold</p>
+            </li>
+          </ul>
+        </div>
+      </article>
+      <article class="file-card">
+        <div class="file-header">
+          <h2 class="file-title">./upload\main.rs</h2>
+          <div class="badge">5 个问题</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-box"><strong>总行数</strong><span>73</span></div>
+          <div class="metric-box"><strong>代码行</strong><span>49</span></div>
+          <div class="metric-box"><strong>注释行</strong><span>11</span></div>
+          <div class="metric-box"><strong>空白行</strong><span>13</span></div>
+          <div class="metric-box"><strong>函数数</strong><span>1</span></div>
+          <div class="metric-box"><strong>最大嵌套</strong><span>5</span></div>
+        </div>
+        <div class="functions">
+          <h2 class="section-title">函数信息</h2>
+          <ul class="clean">
+            <li class="list-card"><strong>main</strong><br>第 5-73 行，参数 0 个，长度 69 行</li>
+          </ul>
+        </div>
+        <div class="issues">
+          <h2 class="section-title">问题详情</h2>
+          <ul class="clean">
+            <li class="list-card">
+              <div class="issue-top">
+                <span class="issue-rule">rust.unwrap</span>
+                <span class="severity severity-warning">警告</span>
+              </div>
+              <p class="issue-message">第 45 行: use of unwrap/expect may cause panic</p>
+              <div class="issue-snippet">let mut level_map = level_count.lock().unwrap();</div>
+            </li>
+            <li class="list-card">
+              <div class="issue-top">
+                <span class="issue-rule">rust.unwrap</span>
+                <span class="severity severity-warning">警告</span>
+              </div>
+              <p class="issue-message">第 51 行: use of unwrap/expect may cause panic</p>
+              <div class="issue-snippet">let mut service_map = service_error_count.lock().unwrap();</div>
+            </li>
+            <li class="list-card">
+              <div class="issue-top">
+                <span class="issue-rule">rust.unwrap</span>
+                <span class="severity severity-warning">警告</span>
+              </div>
+              <p class="issue-message">第 61 行: use of unwrap/expect may cause panic</p>
+              <div class="issue-snippet">handle.join().unwrap();</div>
+            </li>
+            <li class="list-card">
+              <div class="issue-top">
+                <span class="issue-rule">rust.unwrap</span>
+                <span class="severity severity-warning">警告</span>
+              </div>
+              <p class="issue-message">第 65 行: use of unwrap/expect may cause panic</p>
+              <div class="issue-snippet">let level_count = level_count.lock().unwrap();</div>
+            </li>
+            <li class="list-card">
+              <div class="issue-top">
+                <span class="issue-rule">rust.unwrap</span>
+                <span class="severity severity-warning">警告</span>
+              </div>
+              <p class="issue-message">第 70 行: use of unwrap/expect may cause panic</p>
+              <div class="issue-snippet">let service_error_count = service_error_count.lock().unwrap();</div>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section>
+  </div>
+</body>
+</html>
