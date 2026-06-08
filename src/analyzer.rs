@@ -515,7 +515,11 @@ fn build_python_function_info(lines: &[String], start_idx: usize) -> Option<Func
     let name = after_def[..name_end].trim().to_string();
     let parameter_count = count_parameters(line);
 
-    let base_indent = lines.get(start_idx)?.chars().take_while(|c| *c == ' ').count();
+    let base_indent = lines
+        .get(start_idx)?
+        .chars()
+        .take_while(|c| *c == ' ')
+        .count();
     let mut end_line = start_idx + 1;
 
     for (idx, current_line) in lines.iter().enumerate().skip(start_idx + 1) {

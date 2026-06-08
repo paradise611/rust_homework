@@ -29,7 +29,10 @@ fn render_text_report(report: &AnalysisReport) -> String {
         "注释行数: {}\n",
         report.summary.total_comment_lines
     ));
-    out.push_str(&format!("空白行数: {}\n\n", report.summary.total_blank_lines));
+    out.push_str(&format!(
+        "空白行数: {}\n\n",
+        report.summary.total_blank_lines
+    ));
 
     for file in &report.files {
         let issues = visible_issues(&file.issues);
@@ -41,7 +44,10 @@ fn render_text_report(report: &AnalysisReport) -> String {
         out.push_str(&format!("  注释行: {}\n", file.metrics.comment_lines));
         out.push_str(&format!("  空白行: {}\n", file.metrics.blank_lines));
         out.push_str(&format!("  函数数量: {}\n", file.metrics.function_count));
-        out.push_str(&format!("  最大嵌套深度: {}\n", file.metrics.max_nesting_depth));
+        out.push_str(&format!(
+            "  最大嵌套深度: {}\n",
+            file.metrics.max_nesting_depth
+        ));
 
         if !file.metrics.functions.is_empty() {
             out.push_str("  函数列表:\n");
@@ -117,7 +123,9 @@ fn render_html_report(report: &AnalysisReport) -> String {
     out.push_str("      font-family: \"Noto Serif SC\", \"Source Han Serif SC\", \"PingFang SC\", \"Microsoft YaHei\", serif;\n");
     out.push_str("      color: var(--text);\n");
     out.push_str("      background:\n");
-    out.push_str("        radial-gradient(circle at top left, rgba(140, 90, 60, 0.10), transparent 32%),\n");
+    out.push_str(
+        "        radial-gradient(circle at top left, rgba(140, 90, 60, 0.10), transparent 32%),\n",
+    );
     out.push_str("        linear-gradient(180deg, #f7f3eb 0%, #f1ebe1 100%);\n");
     out.push_str("      line-height: 1.7;\n");
     out.push_str("    }\n");
@@ -461,7 +469,10 @@ fn visible_issues<T>(issues: &[T]) -> Vec<&T>
 where
     T: HasSeverity,
 {
-    issues.iter().filter(|issue| is_visible(issue.severity())).collect()
+    issues
+        .iter()
+        .filter(|issue| is_visible(issue.severity()))
+        .collect()
 }
 
 fn is_visible(severity: &str) -> bool {
