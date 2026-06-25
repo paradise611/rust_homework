@@ -9,9 +9,7 @@ use crate::model::{
     Issue, Position, Severity, Summary,
 };
 
-// ====================
-// Project Entry
-// ====================
+
 
 pub fn analyze_project(config: &AnalysisConfig) -> AppResult<AnalysisReport> {
     let files = collect_source_files(&config.root_path)?;
@@ -45,9 +43,6 @@ pub fn analyze_project(config: &AnalysisConfig) -> AppResult<AnalysisReport> {
     })
 }
 
-// ====================
-// File Collection
-// ====================
 
 fn collect_source_files(root: &Path) -> AppResult<Vec<PathBuf>> {
     let mut files = Vec::new();
@@ -96,9 +91,6 @@ fn detect_language(path: &Path) -> Option<&'static str> {
     }
 }
 
-// ====================
-// Shared Helpers
-// ====================
 
 fn read_file_lines(path: &Path) -> AppResult<Vec<String>> {
     let content = fs::read_to_string(path)?;
@@ -196,9 +188,9 @@ fn count_parameters(signature: &str) -> usize {
     }
 }
 
-// ====================
-// Rust Analysis
-// ====================
+
+// Rust文件分析
+
 
 fn analyze_rust_file(path: &Path, config: &AnalysisConfig) -> AppResult<FileReport> {
     let lines = read_file_lines(path)?;
@@ -374,9 +366,9 @@ fn build_rust_function_info(lines: &[String], start_idx: usize) -> Option<Functi
     })
 }
 
-// ====================
-// Python Analysis
-// ====================
+
+// Python文件分析
+
 
 fn analyze_python_file(path: &Path, config: &AnalysisConfig) -> AppResult<FileReport> {
     let lines = read_file_lines(path)?;
@@ -546,9 +538,9 @@ fn build_python_function_info(lines: &[String], start_idx: usize) -> Option<Func
     })
 }
 
-// ====================
-// C/C++ Analysis
-// ====================
+
+// C/C++文件分析
+
 
 fn analyze_cpp_file(path: &Path, config: &AnalysisConfig) -> AppResult<FileReport> {
     let lines = read_file_lines(path)?;
@@ -743,9 +735,9 @@ fn build_cpp_function_info(lines: &[String], start_idx: usize) -> Option<Functio
     })
 }
 
-// ====================
-// Shared Rules
-// ====================
+
+//共享规则分析
+
 
 fn check_shared_rules(
     path: &Path,

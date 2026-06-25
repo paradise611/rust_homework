@@ -12,7 +12,6 @@ fn render_text_report(report: &AnalysisReport) -> String {
     let mut out = String::new();
     let visible_total_issues = visible_issue_count(report);
 
-    // Keep these English strings for tests.
     out.push_str("Rust Homework Static Analysis Report\n");
     out.push_str("File Count\n");
     out.push_str("===================================\n\n");
